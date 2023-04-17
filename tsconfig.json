@@ -5,6 +5,7 @@
     "lib": ["es2017", "esnext.asynciterable"],
     "typeRoots": ["node_modules/@types"],
     "allowSyntheticDefaultImports": true,
+    "types": ["node", "express"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,

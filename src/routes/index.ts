@@ -4,8 +4,8 @@ import { errorHandler } from '../middlewares/errorHandler'
 
 const router = Router()
 
-
 router.use('/auth', authRoute)
+
 
 router.use(errorHandler);
 

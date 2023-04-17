@@ -28,7 +28,7 @@ class AuthController {
         if(err) return next("Invalid password")
       })
       
-      const key = jwt.sign(user.toJSON(), process.env.ADMIN_PASS)
+      const key = jwt.sign(user.toJSON(), process.env.SECRET_KEY)
       
       res.json({
         success: true,
@@ -36,6 +36,17 @@ class AuthController {
       })
     }catch(err){
       return next(err)
+    }
+  }
+
+  async me(req: Request, res: Response, next: NextFunction){
+    try{
+      res.json({
+        success: true,
+        data: req.user
+      })
+    }catch(err){
+      console.log("Error")
     }
   }
 }
