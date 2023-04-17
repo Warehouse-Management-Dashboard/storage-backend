@@ -10,32 +10,34 @@ interface LoginInput extends Asserts<typeof loginSchema> {}
 
 
 class AuthController {
-  async login(req: Request, res: Response, next: NextFunction){
+  async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try{
       const {
         email,
         password
       }: LoginInput = loginSchema.validateSync(req.body)
-      const user = await db.User.findOne({
+      const user = await db.Admin.findOne({
         where:{
           email
         }
       })
-      if(!user) throw new Error("User not found")
-      const key = bcrypt.compare(password, user.password, (err: any, res: any) => {
-        if(err) throw new Error("Invalid password")
-        const accessToken = jwt.sign(user, process.env.SECRET_KEY)
-        return accessToken
+      if(!user) return next("User not found")
+
+      
+      bcrypt.compare(password, user.password, (err: any, res: any) => {
+        if(err) return next("Invalid password")
       })
+      
+      const key = jwt.sign(user.toJSON(), process.env.ADMIN_PASS)
       
       res.json({
         success: true,
         token: key
       })
     }catch(err){
-      throw new Error(err)
+      return next(err)
     }
   }
 }
 
-export default new AuthController;
+export default new AuthController();

@@ -1,8 +1,12 @@
 import { Router } from 'express'
-import AuthController from '../controllers/authController'
+import authRoute from './auth'
+import { errorHandler } from '../middlewares/errorHandler'
 
 const router = Router()
 
-router.route('/auth/login').post(AuthController.login)
+
+router.use('/auth', authRoute)
+
+router.use(errorHandler);
 
 export default router

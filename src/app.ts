@@ -23,9 +23,17 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT;
 
-app.use(cors());
-
+app.use(
+  cors({
+    allowedHeaders: ["authorization", "Content-Type"], // you can change the headers
+    exposedHeaders: ["authorization"], // you can change the headers
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+  })
+);
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use("/api", router);
 
 app.listen(PORT, () => {
