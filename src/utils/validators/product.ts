@@ -15,3 +15,11 @@ export const productFilterSchema = yup.object().shape({
     productCategoryId: yup.number().nullable().default(null),
     date: yup.date().nullable().default(null)
 })
+
+export const sellProduct = yup.object().shape({
+    products: yup.array().of(yup.object().shape({
+        productId: yup.number().required(),
+        quantity: yup.number().required(),
+        customer: yup.string().required()
+    })).required()
+})

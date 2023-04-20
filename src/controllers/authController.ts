@@ -5,6 +5,7 @@ import { Asserts } from 'yup'
 import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
 import db from '../models'
+import { SECRET_KEY } from '../constants';
 
 interface LoginInput extends Asserts<typeof loginSchema> {}
 
@@ -28,7 +29,7 @@ class AuthController {
         if(err) return next("Invalid password")
       })
       
-      const key = jwt.sign(user.toJSON(), process.env.SECRET_KEY)
+      const key = jwt.sign(user.toJSON(), SECRET_KEY)
       
       res.json({
         success: true,
