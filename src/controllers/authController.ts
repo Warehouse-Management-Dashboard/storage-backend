@@ -25,8 +25,13 @@ class AuthController {
       if(!user) return next("User not found")
 
       
-      bcrypt.compare(password, user.password, (err: any, res: any) => {
-        if(err) return next("Invalid password")
+      bcrypt.compare(password, user.password, async (err: any, res: any) => {
+        if(err){
+          throw new Error(err)
+        }
+        if(!res){
+          throw new Error("Invalid password")
+        }
       })
       
       const key = jwt.sign(user.toJSON(), SECRET_KEY)
@@ -36,6 +41,7 @@ class AuthController {
         token: key
       })
     }catch(err){
+      console.log("Somethig fucked up")
       return next(err)
     }
   }

@@ -118,6 +118,10 @@ class ProductController{
                 }, {
                     transaction: t
                 })
+
+                await db.ProductLog.create({
+                    order_amount: quantity
+                })
     
                 await db.AdminLog.create({
                     admin_id: admin.id,
@@ -169,15 +173,28 @@ class ProductController{
             })
             if(!productCategory) return next("Product category not found")
 
+            if(quantity < product.quantity) return next("Quantity cannot be less than current quantity")
+
             await db.sequelize.transaction(async (t: any) => {
+                const prevTotalOrderPrice = product.total_order_price
+                const prevProductQuantity = product.quantity
+                const quantityOrdered = quantity - prevProductQuantity
+
                 product.product_name = productName
                 product.product_category_id = productCategoryId
-                product.product_supplier = supplier
-                product.product_quantity = quantity
+                product.supplier = supplier
+                product.quantity = quantity
                 product.product_sell_price = sellPrice
                 product.order_price = orderPrice
+                product.total_order_price = prevTotalOrderPrice + (quantityOrdered * orderPrice)
 
                 await product.save({ transaction: t })
+
+                await db.ProductLog.create({
+                    order_amount: quantityOrdered
+                }, {
+                    transaction: t
+                })
 
                 await db.AdminLog.create({
                     admin_id: admin.id,
@@ -240,6 +257,8 @@ class ProductController{
             const admin = req.user
 
             await db.sequelize.transaction(async (t: any) => {
+                const totalItemsSold = products.reduce((res: number, p2: any) => res + p2.quantity, 0)
+                console.log(totalItemsSold)
                 for(const p of products){
                     const product = await db.Product.findOne({
                         where:{
@@ -257,6 +276,11 @@ class ProductController{
                     product.total_sell_price = totalSellPrice + (p.quantity * sellPrice)
                     await product.save({ transaction: t })
                 }
+
+                await db.ProductLog.create({
+                    sell_amount: totalItemsSold
+                })
+
                 await db.AdminLog.create({
                     admin_id: admin.id,
                     action_name: "CREATE",
@@ -265,8 +289,6 @@ class ProductController{
                     transaction: t
                 })
             })
-
-            
 
             res.json({
                 success: true,
