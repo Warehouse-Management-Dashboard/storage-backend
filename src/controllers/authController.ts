@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
 import db from '../models'
 import { SECRET_KEY } from '../constants';
+import { checkPassword } from '../utils/checkPassword';
 
 interface LoginInput extends Asserts<typeof loginSchema> {}
 
@@ -24,15 +25,9 @@ class AuthController {
       })
       if(!user) return next("User not found")
 
-      
-      bcrypt.compare(password, user.password, async (err: any, res: any) => {
-        if(err){
-          throw new Error(err)
-        }
-        if(!res){
-          throw new Error("Invalid password")
-        }
-      })
+      const successLogin = await checkPassword(password, user.password)
+
+      if(!successLogin) return next("Login failed")
       
       const key = jwt.sign(user.toJSON(), SECRET_KEY)
       
