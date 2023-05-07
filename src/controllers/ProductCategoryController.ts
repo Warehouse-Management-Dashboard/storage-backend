@@ -100,7 +100,7 @@ class ProductCategoryController {
           {
             admin_id: admin.id,
             action_name: 'UPDATE',
-            action_descrtiption: `admin with id:${admin.id} updated product category with id:${id}`,
+            action_description: `admin with id:${admin.id} updated product category with id:${id}`,
           },
           {
             transaction: t,
