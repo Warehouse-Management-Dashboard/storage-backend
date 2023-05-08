@@ -26,9 +26,10 @@ class OverviewController{
                     CONVERT(SUM(total_sell_price), UNSIGNED) AS total_sell_price,
                     CONVERT(SUM(total_order_price), UNSIGNED) AS total_order_price
                 FROM products
-                WHERE deleted_at IS NULL AND created_at >= '${now.subtract(1, financeDateUnit)}'
+                WHERE deleted_at IS NULL AND created_at >= '${now.subtract(1, financeDateUnit).format('YYYY-MM-DD')}'
             `, {
-                type: QueryTypes.SELECT
+                type: QueryTypes.SELECT,
+                logging: console.log
             })
 
             const productReport = await db.sequelize.query(`
@@ -36,7 +37,7 @@ class OverviewController{
                     CONVERT(SUM(order_amount), UNSIGNED) AS order_amount,
                     CONVERT(SUM(sell_amount), UNSIGNED) AS sell_amount
                 FROM product_logs
-                WHERE deleted_at IS NULL AND created_at >= '${now.subtract(1, productDateUnit)}'
+                WHERE deleted_at IS NULL AND created_at >= '${now.subtract(1, productDateUnit).format('YYYY-MM-DD')}'
             `, {
                 type: QueryTypes.SELECT
             })
