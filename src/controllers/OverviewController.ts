@@ -32,6 +32,12 @@ class OverviewController{
                 logging: console.log
             })
 
+
+            const finance = await db.FinanceLog.findAll({
+                where:{
+                    created_at: {[Op.gte]: now.subtract(1, financeDateUnit).format('YYYY-MM-DD')}
+                }
+            })
             const productReport = await db.sequelize.query(`
                 SELECT 
                     CONVERT(SUM(order_amount), UNSIGNED) AS order_amount,
@@ -51,9 +57,9 @@ class OverviewController{
                         profit: parseInt(productFinance[0].total_sell_price) - parseInt(productFinance[0].total_order_price)
                     },
                     financeReport: {
-                        totalSold: financeReport[0].total_sell_price,
-                        totalOrdered: financeReport[0].total_order_price,
-                        profit: financeReport[0].total_sell_price - financeReport[0].total_order_price
+                        totalSold: finance.map((f: any) => f.sell_amount).filter(Boolean),
+                        totalOrdered: finance.map((f: any) => f.order_amount).filter(Boolean),
+                        profit: finance.map((f: any) => f.profit).filter(Boolean)
                     },
                     productReport: {
                         sold: productReport[0].sell_amount,

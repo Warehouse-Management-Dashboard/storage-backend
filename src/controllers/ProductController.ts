@@ -119,8 +119,11 @@ class ProductController{
                     transaction: t
                 })
 
-                await db.ProductLog.create({
-                    order_amount: quantity
+                await db.FinanceLog.create({
+                    product_id: createdProduct.id,
+                    order_amount: quantity * orderPrice
+                }, {
+                    transaction: t
                 })
     
                 await db.AdminLog.create({
@@ -190,8 +193,9 @@ class ProductController{
 
                 await product.save({ transaction: t })
 
-                await db.ProductLog.create({
-                    order_amount: quantityOrdered
+                await db.FinanceLog.create({
+                    product_id: id,
+                    order_amount: quantityOrdered * orderPrice
                 }, {
                     transaction: t
                 })
@@ -275,11 +279,15 @@ class ProductController{
                     product.quantity = newProductStock
                     product.total_sell_price = totalSellPrice + (p.quantity * sellPrice)
                     await product.save({ transaction: t })
+                    await db.FinanceLog.create({
+                        product_id: p.productId,
+                        sell_amount: product.sell_price,
+                        profit: p.quantity * product.sell_price - p.quantity * product.order_price
+                    }, {
+                        transaction: t
+                    })
                 }
 
-                await db.ProductLog.create({
-                    sell_amount: totalItemsSold
-                })
 
                 await db.AdminLog.create({
                     admin_id: admin.id,
