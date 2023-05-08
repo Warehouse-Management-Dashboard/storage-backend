@@ -17,9 +17,9 @@ export const productFilterSchema = yup.object().shape({
 })
 
 export const sellProduct = yup.object().shape({
+    customer: yup.string().required(),
     products: yup.array().of(yup.object().shape({
         productId: yup.number().required(),
         quantity: yup.number().required(),
-        customer: yup.string().required()
     })).required()
 })

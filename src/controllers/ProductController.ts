@@ -252,7 +252,7 @@ class ProductController{
 
     async sell(req: Request, res: Response, next: NextFunction){
         try{
-            const { products }: SellProductInput = sellProduct.validateSync(req.body)
+            const { products, customer }: SellProductInput = sellProduct.validateSync(req.body)
 
             const admin = req.user
 

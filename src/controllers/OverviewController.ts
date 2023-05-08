@@ -23,8 +23,8 @@ class OverviewController{
 
             const financeReport = await db.sequelize.query(`
                 SELECT 
-                    CAST(SUM(total_sell_price) AS INTEGER) AS total_sell_price,
-                    CAST(SUM(total_order_price) AS INTEGER) AS total_order_price
+                    CONVERT(SUM(total_sell_price), UNSIGNED) AS total_sell_price,
+                    CONVERT(SUM(total_order_price), UNSIGNED) AS total_order_price
                 FROM products
                 WHERE deleted_at IS NULL AND created_at >= '${now.subtract(1, financeDateUnit)}'
             `, {
@@ -33,8 +33,8 @@ class OverviewController{
 
             const productReport = await db.sequelize.query(`
                 SELECT 
-                    CAST(SUM(order_amount) AS INTEGER) AS order_amount,
-                    CAST(SUM(sell_amount) AS INTEGER) AS sell_amount
+                    CONVERT(SUM(order_amount), UNSIGNED) AS order_amount,
+                    CONVERT(SUM(sell_amount), UNSIGNED) AS sell_amount
                 FROM product_logs
                 WHERE deleted_at IS NULL AND created_at >= '${now.subtract(1, productDateUnit)}'
             `, {
