@@ -38,7 +38,8 @@ class AdminLogController{
                         as: 'admin',
                         model: db.Admin
                     }
-                ]
+                ],
+                order: [['created_at', 'DESC']]
             })
 
             res.json({
