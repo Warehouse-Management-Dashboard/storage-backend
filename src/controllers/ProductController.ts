@@ -187,7 +187,7 @@ class ProductController{
                 product.product_category_id = productCategoryId
                 product.supplier = supplier
                 product.quantity = quantity
-                product.product_sell_price = sellPrice
+                product.sell_price = sellPrice
                 product.order_price = orderPrice
                 product.total_order_price = prevTotalOrderPrice + (quantityOrdered * orderPrice)
 
