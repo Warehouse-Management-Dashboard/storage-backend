@@ -125,6 +125,12 @@ class ProductController{
                 }, {
                     transaction: t
                 })
+
+                await db.ProductLog.create({
+                    order_amount: quantity,
+                }, {
+                    transaction: t
+                })
     
                 await db.AdminLog.create({
                     admin_id: admin.id,
@@ -200,6 +206,12 @@ class ProductController{
                     transaction: t
                 })
 
+                await db.ProductLog.create({
+                    order_amount: quantityOrdered
+                }, {
+                    transaction: t
+                })
+
                 await db.AdminLog.create({
                     admin_id: admin.id,
                     action_name: "UPDATE",
@@ -262,7 +274,6 @@ class ProductController{
 
             await db.sequelize.transaction(async (t: any) => {
                 const totalItemsSold = products.reduce((res: number, p2: any) => res + p2.quantity, 0)
-                console.log(totalItemsSold)
                 for(const p of products){
                     const product = await db.Product.findOne({
                         where:{
@@ -287,6 +298,12 @@ class ProductController{
                         transaction: t
                     })
                 }
+
+                await db.ProductLog.create({
+                    sell_amount: totalItemsSold
+                }, {
+                    transaction: t
+                })
 
 
                 await db.AdminLog.create({
